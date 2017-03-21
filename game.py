@@ -1,4 +1,6 @@
 from selenium import webdriver
+from itertools import count, islice
+from math import sqrt
 from selenium.webdriver.common.keys import Keys
 import time
 
@@ -8,14 +10,8 @@ driver.get("http://isthisprime.com/game/")
 elem = driver.find_element_by_id("start")
 
 
-def isPrime(n):
-    if n==1:
-        return False
-    for i in range(2,long(n**0.5)+1):
-        if n%i==0  :
-            return False
-
-    return True
+def is_Prime(n):
+    return n > 1 and all(n%i for i in islice(count(2), long(sqrt(n)-1)))
 
 elem.click()
 yes = driver.find_element_by_id("yes")
@@ -24,13 +20,12 @@ timeCounter = driver.find_element_by_id('time')
 timeCount = timeCounter.text
 while timeCount != '0':
     primeText = driver.find_element_by_id('n')
-
     try:
         primeNum = int(primeText.text)
     except:
         primeNum = 0
 
-    if(isPrime(primeNum)):
+    if(is_Prime(primeNum)):
         yes.click()
     else:
         no.click()
